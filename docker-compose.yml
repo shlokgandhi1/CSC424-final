@@ -1,0 +1,29 @@
+services:
+  frontend:
+    build: ./frontend
+    networks:
+      - app-net
+
+  backend:
+    build: ./backend
+    networks:
+      - app-net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5000/api/ping || exit 1"]
+      interval: 10s
+      retries: 3
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - app-net
+
+networks:
+  app-net:
