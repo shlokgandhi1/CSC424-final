@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - name: Checkout code
@@ -27,14 +27,9 @@ jobs:
           docker build -t ${{ secrets.DOCKER_USERNAME }}/backend:latest ./backend
           docker push ${{ secrets.DOCKER_USERNAME }}/backend:latest
 
-      - name: Deploy to QA VM
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd csc424-final-exam
-            git pull origin main
-            docker compose down
-            docker compose up -d --build
+      - name: Deploy
+        run: |
+          cd csc424-final-exam
+          git pull origin main
+          docker compose down
+          docker compose up -d --build
