@@ -29,7 +29,6 @@ jobs:
 
       - name: Deploy
         run: |
-          cd csc424-final-exam
           git pull origin main
           docker compose down
           docker compose up -d --build
